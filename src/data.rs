@@ -262,7 +262,8 @@ pub fn load_board(path: &str) -> Result<Board, DataError> {
 pub fn load_scores(path: &str) -> Result<Vec<ScoreRecord>, DataError> {
     let text = match fs::read_to_string(path) {
         Ok(text) => text,
-        Err(_) => return Ok(Vec::new()),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => return Err(DataError::Io(error)),
     };
     let mut records = Vec::new();
     for line in text.lines() {
