@@ -60,7 +60,17 @@ pub enum BoardError {
 // character or counts the variant carries, and use SIZE instead of typing 10.
 impl fmt::Display for BoardError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "TODO: {self:?}")
+        match self {
+            BoardError::WrongRowCount(found) => {
+                write!(f, "board has {found} rows, expected {SIZE}")
+            }
+            BoardError::WrongRowWidth { line, found } => {
+                write!(f, "line {line} has {found} characters, expected {SIZE}")
+            }
+            BoardError::BadChar { line, ch } => {
+                write!(f, "line {line} contains invalid character '{ch}'")
+            }
+        }
     }
 }
 
@@ -201,23 +211,31 @@ pub fn load_fleet(path: &str) -> Result<FleetReport, DataError> {
 pub fn parse_board(text: &str) -> Result<Board, BoardError> {
     let mut board = new_board();
     let mut row = 0;
-    for line in text.lines() {
+    for (index, line) in text.lines().enumerate() {
         let line = line.trim();
         if line.is_empty() || line.starts_with('#') {
             continue;
         }
         if row >= SIZE {
-            return Err(BoardError::WrongRowCount(row));
+            return Err(BoardError::WrongRowCount(row + 1));
         }
         let chars: Vec<char> = line.chars().collect();
         if chars.len() != SIZE {
-            return Err(BoardError::WrongRowCount(row));
+            return Err(BoardError::WrongRowWidth {
+                line: index + 1,
+                found: chars.len(),
+            });
         }
         for col in 0..SIZE {
             match chars[col] {
                 '.' => board[row][col] = Cell::Water,
                 'S' => board[row][col] = Cell::Ship,
-                _ => return Err(BoardError::WrongRowCount(row)),
+                ch => {
+                    return Err(BoardError::BadChar {
+                        line: index + 1,
+                        ch,
+                    });
+                }
             }
         }
         row += 1;
