@@ -37,7 +37,14 @@ pub enum ShipLineError {
 // Use MIN_SHIP and MAX_SHIP in the message instead of typing 2 and 5.
 impl fmt::Display for ShipLineError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "TODO: {self:?}")
+        match self {
+            ShipLineError::MissingComma => write!(f, "missing comma between ship name and length"),
+            ShipLineError::EmptyName => write!(f, "ship name cannot be empty"),
+            ShipLineError::BadLength(value) => write!(f, "ship length {value} is not a number"),
+            ShipLineError::LengthOutOfRange(length) => {
+                write!(f, "ship has length {length}, outside {MIN_SHIP}-{MAX_SHIP}")
+            }
+        }
     }
 }
 
@@ -139,14 +146,14 @@ pub fn parse_ship_line(line: &str) -> Result<ShipSpec, ShipLineError> {
     }
     let name = parts[0].trim();
     if name.is_empty() {
-        return Err(ShipLineError::MissingComma);
+        return Err(ShipLineError::EmptyName);
     }
     let length = match parts[1].trim().parse::<usize>() {
         Ok(n) => n,
-        Err(_) => return Err(ShipLineError::MissingComma),
+        Err(_) => return Err(ShipLineError::BadLength(parts[1].trim().to_string())),
     };
     if length < MIN_SHIP || length > MAX_SHIP {
-        return Err(ShipLineError::MissingComma);
+        return Err(ShipLineError::LengthOutOfRange(length));
     }
     Ok(ShipSpec {
         name: name.to_string(),
