@@ -35,10 +35,22 @@ fn place_accepts_ships_that_fit() {
 #[test]
 fn place_rejects_off_the_edge() {
     let mut board = new_board();
-    assert_eq!(place(&mut board, 0, 8, 3, true), Err(PlaceError::OutOfBounds));
-    assert_eq!(place(&mut board, 8, 0, 3, false), Err(PlaceError::OutOfBounds));
-    assert_eq!(place(&mut board, 10, 0, 2, true), Err(PlaceError::OutOfBounds));
-    assert_eq!(place(&mut board, 0, 10, 2, false), Err(PlaceError::OutOfBounds));
+    assert_eq!(
+        place(&mut board, 0, 8, 3, true),
+        Err(PlaceError::OutOfBounds)
+    );
+    assert_eq!(
+        place(&mut board, 8, 0, 3, false),
+        Err(PlaceError::OutOfBounds)
+    );
+    assert_eq!(
+        place(&mut board, 10, 0, 2, true),
+        Err(PlaceError::OutOfBounds)
+    );
+    assert_eq!(
+        place(&mut board, 0, 10, 2, false),
+        Err(PlaceError::OutOfBounds)
+    );
 }
 
 #[test]

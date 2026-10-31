@@ -43,7 +43,10 @@ fn parse_ship_line_trims_spaces() {
 
 #[test]
 fn parse_ship_line_missing_comma() {
-    assert_eq!(parse_ship_line("Flagship"), Err(ShipLineError::MissingComma));
+    assert_eq!(
+        parse_ship_line("Flagship"),
+        Err(ShipLineError::MissingComma)
+    );
 }
 
 #[test]
@@ -141,7 +144,10 @@ fn parse_board_nine_rows() {
 #[test]
 fn parse_board_eleven_rows() {
     let eleven_rows = format!("{GOOD_BOARD}..........\n");
-    assert_eq!(parse_board(&eleven_rows), Err(BoardError::WrongRowCount(11)));
+    assert_eq!(
+        parse_board(&eleven_rows),
+        Err(BoardError::WrongRowCount(11))
+    );
 }
 
 #[test]
@@ -165,7 +171,11 @@ fn board_messages_are_sentences() {
         assert!(!text.contains("WrongRow"), "debug form leaked: {text}");
         assert!(!text.contains("BadChar"), "debug form leaked: {text}");
     }
-    assert!(BoardError::BadChar { line: 6, ch: 'x' }.to_string().contains("line 6"));
+    assert!(
+        BoardError::BadChar { line: 6, ch: 'x' }
+            .to_string()
+            .contains("line 6")
+    );
 }
 
 #[test]
@@ -248,7 +258,10 @@ fn append_score_to_a_directory_is_an_error() {
         name: "Ana".to_string(),
         score: 83,
     };
-    assert!(matches!(append_score("data", &record), Err(DataError::Io(_))));
+    assert!(matches!(
+        append_score("data", &record),
+        Err(DataError::Io(_))
+    ));
 }
 
 // ---- STUDENT tests: write these three (Task 11) ----
