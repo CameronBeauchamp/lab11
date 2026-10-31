@@ -114,7 +114,7 @@ fn practice_game() {
             }
         }
         // TODO (Task 9): include the reason: "Practice board unavailable: <message>".
-        Err(_) => println!("Practice board unavailable: {error}"),
+        Err(error) => println!("Practice board unavailable: {error}"),
     }
 }
 
